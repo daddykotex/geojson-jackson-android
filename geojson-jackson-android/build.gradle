@@ -16,36 +16,24 @@ android {
     }
     sourceSets {
         main.setRoot('src/main')
-        androidTest.setRoot('src/test')
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 }
 
 def siteUrl = 'https://github.com/daddykotex/geojson-jackson-android'
 def gitUrl = 'git@github.com:daddykotex/geojson-jackson-android.git'
 
-/*
-    FROM : https://github.com/cocoahero/android-geojson
- */
+
 def isReleaseBuild() {
     return !LIBRARY_VERSION.contains("SNAPSHOT")
-}
-def getReleaseRepositoryUrl() {
-    return hasProperty('sonatypeReleaseRepo') ? sonatypeReleaseRepo :
-            "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-}
-def getSnapshotRepositoryUrl() {
-    return hasProperty('sonatypeSnapshotRepo') ? sonatypeSnapshotRepo :
-            "https://oss.sonatype.org/content/repositories/snapshots/"
-}
-def getRepositoryUsername() {
-    return hasProperty('sonatypeUsername') ? sonatypeUsername : ""
-}
-def getRepositoryPassword() {
-    return hasProperty('sonatypePassword') ? sonatypePassword : ""
 }
 
 task sourcesJar(type: Jar) {
@@ -68,54 +56,54 @@ artifacts {
     archives sourcesJar
 }
 
+uploadArchives {
+    configuration = configurations.archives
+    repositories.mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-afterEvaluate { project ->
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                pom.groupId = POM_GROUP_ID
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = LIBRARY_VERSION
-                repository(url: getReleaseRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(),
-                            password: getRepositoryPassword())
+        snapshotRepository(url: sonatypeSnapshotRepo) {
+            authentication(userName: sonatypeUsername,
+                    password: sonatypePassword)
+        }
+
+        repository(url: sonatypeReleaseRepo) {
+            authentication(userName: sonatypeUsername,
+                    password: sonatypePassword)
+        }
+
+        pom.project {
+            name "GeoJson Jackson for Android"
+            packaging "aar"
+            description "Android GeoJSON Library to use with Jackson"
+            url siteUrl
+
+            scm {
+                url siteUrl
+                connection "scm:git:" + gitUrl
+                developerConnection "scm:git:" + gitUrl
+            }
+
+            licenses {
+                license {
+                    name "The Apache Software License, Version 2.0"
+                    url siteUrl + "/blob/master/LICENSE"
+                    distribution "repo"
                 }
-                snapshotRepository(url: getSnapshotRepositoryUrl()) {
-                    authentication(userName: getRepositoryUsername(),
-                            password: getRepositoryPassword())
-                }
-                pom.project {
-                    name "GeoJson Jackson for Android"
-                    packaging "aar"
-                    description "Android GeoJSON Library to use with Jackson"
-                    url siteUrl
-                    scm {
-                        url siteUrl
-                        connection "scm:git:" + gitUrl
-                        developerConnection "scm:git:" + gitUrl
-                    }
-                    licenses {
-                        license {
-                            name "The Apache Software License, Version 2.0"
-                            url siteUrl + "/blob/master/LICENSE"
-                            distribution "repo"
-                        }
-                    }
-                    developers {
-                        developer {
-                            id "daddykotex"
-                            name "David Francoeur"
-                        }
-                    }
+            }
+
+            developers {
+                developer {
+                    id "daddykotex"
+                    name "David Francoeur"
                 }
             }
         }
     }
-    signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
+}
+
+signing {
+    required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
 }
 
 
