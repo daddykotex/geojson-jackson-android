@@ -3,9 +3,10 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 21
@@ -13,11 +14,13 @@ android {
         versionName LIBRARY_VERSION
 
     }
-
-
     sourceSets {
         main.setRoot('src/main')
         androidTest.setRoot('src/test')
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
     }
 }
 
@@ -31,20 +34,18 @@ def isReleaseBuild() {
     return !LIBRARY_VERSION.contains("SNAPSHOT")
 }
 def getReleaseRepositoryUrl() {
-    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL :
+    return hasProperty('sonatypeReleaseRepo') ? sonatypeReleaseRepo :
             "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 }
 def getSnapshotRepositoryUrl() {
-    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL :
+    return hasProperty('sonatypeSnapshotRepo') ? sonatypeSnapshotRepo :
             "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 def getRepositoryUsername() {
-    return hasProperty('USERNAME') ? USERNAME :
-            (hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : "")
+    return hasProperty('sonatypeUsername') ? sonatypeUsername : ""
 }
 def getRepositoryPassword() {
-    return hasProperty('PASSWORD') ? PASSWORD :
-            (hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : "")
+    return hasProperty('sonatypePassword') ? sonatypePassword : ""
 }
 
 task sourcesJar(type: Jar) {
@@ -119,7 +120,7 @@ afterEvaluate { project ->
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"

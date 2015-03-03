@@ -1,6 +1,7 @@
 package org.geojson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Geometry<T> extends GeoJsonObject {
@@ -10,10 +11,9 @@ public abstract class Geometry<T> extends GeoJsonObject {
 	public Geometry() {
 	}
 
+    @SafeVarargs
 	public Geometry(T... elements) {
-		for (T coordinate : elements) {
-			coordinates.add(coordinate);
-		}
+        Collections.addAll(coordinates, elements);
 	}
 
 	public Geometry<T> add(T elements) {
