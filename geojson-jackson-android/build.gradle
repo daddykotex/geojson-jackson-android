@@ -1,27 +1,122 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
+
     defaultConfig {
-        minSdkVersion 18
+        minSdkVersion 9
         targetSdkVersion 21
         versionCode 1
-        versionName "1.0"
+        versionName LIBRARY_VERSION
+
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 
     sourceSets {
         main.setRoot('src/main')
         androidTest.setRoot('src/test')
     }
 }
+
+def siteUrl = 'https://github.com/daddykotex/geojson-jackson-android'
+def gitUrl = 'git@github.com:daddykotex/geojson-jackson-android.git'
+
+/*
+    FROM : https://github.com/cocoahero/android-geojson
+ */
+def isReleaseBuild() {
+    return !LIBRARY_VERSION.contains("SNAPSHOT")
+}
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL :
+            "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+}
+def getSnapshotRepositoryUrl() {
+    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL :
+            "https://oss.sonatype.org/content/repositories/snapshots/"
+}
+def getRepositoryUsername() {
+    return hasProperty('USERNAME') ? USERNAME :
+            (hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : "")
+}
+def getRepositoryPassword() {
+    return hasProperty('PASSWORD') ? PASSWORD :
+            (hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : "")
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                pom.groupId = POM_GROUP_ID
+                pom.artifactId = POM_ARTIFACT_ID
+                pom.version = LIBRARY_VERSION
+                repository(url: getReleaseRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(),
+                            password: getRepositoryPassword())
+                }
+                snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(),
+                            password: getRepositoryPassword())
+                }
+                pom.project {
+                    name "GeoJson Jackson for Android"
+                    packaging "aar"
+                    description "Android GeoJSON Library to use with Jackson"
+                    url siteUrl
+                    scm {
+                        url siteUrl
+                        connection "scm:git:" + gitUrl
+                        developerConnection "scm:git:" + gitUrl
+                    }
+                    licenses {
+                        license {
+                            name "The Apache Software License, Version 2.0"
+                            url siteUrl + "/blob/master/LICENSE"
+                            distribution "repo"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id "daddykotex"
+                            name "David Francoeur"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
