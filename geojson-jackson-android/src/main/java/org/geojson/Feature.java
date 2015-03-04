@@ -1,12 +1,16 @@
 package org.geojson;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 public class Feature extends GeoJsonObject {
 
     private GeoJsonObject geometry;
     private String id;
+
+    public Feature(Parcel in) {
+        super(in);
+        this.geometry = in.readParcelable(GeoJsonObject.class.getClassLoader());
+    }
 
     public GeoJsonObject getGeometry() {
         return geometry;
@@ -22,6 +26,11 @@ public class Feature extends GeoJsonObject {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    protected ParcelId getParcelId() {
+        return ParcelId.feature;
     }
 
     @Override
@@ -58,18 +67,14 @@ public class Feature extends GeoJsonObject {
         Parcelable implementation
      */
 
-    public static final Parcelable.Creator<Feature> CREATOR = new Creator<Feature>() {
-        @Override
-        public Feature createFromParcel(Parcel in) {
-            return readParcel(in, Feature.class);
-        }
-
-        @Override
-        public Feature[] newArray(int size) {
-            return new Feature[size];
-        }
-    };
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(this.geometry, flags);
+        dest.writeString(this.id);
+    }
     /*
         Parcelable implementation
      */
+
 }

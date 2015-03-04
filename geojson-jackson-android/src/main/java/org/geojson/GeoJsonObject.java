@@ -1,5 +1,6 @@
 package org.geojson;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,13 +10,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @JsonTypeInfo(property = "type", use = Id.NAME)
 @JsonSubTypes({@Type(Feature.class), @Type(Polygon.class), @Type(MultiPolygon.class), @Type(FeatureCollection.class),
@@ -23,12 +19,23 @@ import java.util.Map;
 @JsonInclude(Include.NON_NULL)
 public abstract class GeoJsonObject implements Parcelable {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    protected enum ParcelId {
+        feature, geometry_collection, line_string, multiline_string, multipoint, multipolygon, point, polygon, feature_collection
+    }
+
+    protected GeoJsonObject() {
+    }
+
+    protected GeoJsonObject(Parcel in) {
+        this.crs = in.readParcelable(Crs.class.getClassLoader());
+        in.readDoubleArray(this.bbox);
+        this.properties = in.readBundle();
+    }
 
     private Crs crs;
     private double[] bbox;
     @JsonInclude(Include.NON_EMPTY)
-    private Map<String, Object> properties = new HashMap<String, Object>();
+    private Bundle properties = new Bundle();
 
     public Crs getCrs() {
         return crs;
@@ -47,7 +54,7 @@ public abstract class GeoJsonObject implements Parcelable {
     }
 
     public void setProperty(String key, Object value) {
-        properties.put(key, value);
+        this.setBundleProperty(key, value);
     }
 
     @SuppressWarnings("unchecked")
@@ -55,15 +62,31 @@ public abstract class GeoJsonObject implements Parcelable {
         return (T) properties.get(key);
     }
 
-    public Map<String, Object> getProperties() {
+    public Bundle getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, Object> properties) {
+    public void setProperties(Bundle properties) {
         this.properties = properties;
     }
 
     public abstract <T> T accept(GeoJsonObjectVisitor<T> geoJsonObjectVisitor);
+
+    private void setBundleProperty(final String key, final Object value) {
+        if (value instanceof String) {
+            this.properties.putString(key, (String) value);
+        } else if (value instanceof Integer) {
+            this.properties.putInt(key, (Integer) value);
+        } else if (value instanceof Boolean) {
+            this.properties.putBoolean(key, (Boolean) value);
+        } else if (value instanceof Float) {
+            this.properties.putFloat(key, (Float) value);
+        } else if (value instanceof Parcelable) {
+            this.properties.putParcelable(key, (Parcelable) value);
+        }
+
+        throw new RuntimeException("Unable to add property to bundle");
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -105,20 +128,35 @@ public abstract class GeoJsonObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        try {
-            dest.writeString(mapper.writeValueAsString(this));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        dest.writeString(this.getParcelId().toString());
+        dest.writeParcelable(this.crs, flags);
+        dest.writeDoubleArray(this.bbox);
+        dest.writeBundle(this.properties);
     }
 
-    protected static <T extends GeoJsonObject> T readParcel(Parcel parcel, Class<T> clazz) {
-        String json = parcel.readString();
-        try {
-            return mapper.readValue(json, clazz);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    protected abstract ParcelId getParcelId();
+
+    public static final Parcelable.Creator<GeoJsonObject> CREATOR = new Creator<GeoJsonObject>() {
+        @Override
+        public GeoJsonObject createFromParcel(Parcel in) {
+            return readParcel(in);
         }
+
+        @Override
+        public GeoJsonObject[] newArray(int size) {
+            return new GeoJsonObject[size];
+        }
+    };
+
+    public static GeoJsonObject readParcel(Parcel in) {
+        final ParcelId parcelId = ParcelId.valueOf(in.readString());
+        switch (parcelId) {
+            case feature:
+                return new Feature(in);
+            case feature_collection:
+                return new FeatureCollection(in);
+        }
+        throw new RuntimeException("Unable to read parcel");
     }
 
     /*
