@@ -1,16 +1,30 @@
 package org.geojson;
 
+import android.os.Bundle;
+
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class ToStringTest {
 
-	@Test
+    final Bundle mockedBundle = mock(Bundle.class);
+
+    @Before
+    public void setUp() throws Exception {
+        when(mockedBundle.toString()).thenReturn("{}");
+    }
+
+    @Test
 	public void itShouldToStringCrs() throws Exception {
-		assertEquals("Crs{type='name', properties={}}", new Crs().toString());
+        Crs crs = new Crs();
+        crs.setProperties(mockedBundle);
+		assertEquals("Crs{type='name', properties={}}", crs.toString());
 	}
 
 	@Test
