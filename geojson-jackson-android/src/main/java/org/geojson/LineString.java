@@ -23,4 +23,5 @@ public class LineString extends MultiPoint {
     public String toString() {
         return "LineString{} " + super.toString();
     }
+
 }

@@ -1,5 +1,7 @@
 package org.geojson;
 
+import android.os.Parcel;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -59,4 +61,17 @@ public class GeometryCollection extends GeoJsonObject implements Iterable<GeoJso
     public String toString() {
         return "GeometryCollection{" + "geometries=" + geometries + "} " + super.toString();
     }
+
+    /*
+        Parcelable implementation
+     */
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeList(this.geometries);
+    }
+    /*
+        Parcelable implementation
+     */
 }

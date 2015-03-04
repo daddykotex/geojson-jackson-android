@@ -1,5 +1,7 @@
 package org.geojson;
 
+import android.os.Parcel;
+
 import java.util.List;
 
 public class MultiLineString extends Geometry<List<LngLatAlt>> {

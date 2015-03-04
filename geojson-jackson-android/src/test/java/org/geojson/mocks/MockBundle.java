@@ -8,6 +8,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import static org.mockito.Matchers.any;
@@ -99,6 +100,13 @@ public class MockBundle {
                 return (Long) objects.get(key);
             }
         });
+        when(mockedBundle.get(anyString())).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String key = invocation.getArguments()[0].toString();
+                return objects.get(key);
+            }
+        });
         when(mockedBundle.getLong(anyString())).thenAnswer(new Answer<Boolean>() {
             @Override
             public Boolean answer(InvocationOnMock invocation) throws Throwable {
@@ -110,6 +118,12 @@ public class MockBundle {
             @Override
             public Integer answer(InvocationOnMock invocation) throws Throwable {
                 return objects.size();
+            }
+        });
+        when(mockedBundle.keySet()).thenAnswer(new Answer<Set<String>>() {
+            @Override
+            public Set<String> answer(InvocationOnMock invocation) throws Throwable {
+                return objects.keySet();
             }
         });
     }

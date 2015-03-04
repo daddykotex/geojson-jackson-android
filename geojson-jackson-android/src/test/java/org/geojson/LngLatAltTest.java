@@ -1,7 +1,12 @@
 package org.geojson;
 
+import android.os.Parcel;
+
+import org.geojson.mocks.MockParcel;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
 
 public class LngLatAltTest {
 
@@ -32,4 +37,17 @@ public class LngLatAltTest {
 		LngLatAlt second = new LngLatAlt(14.D, 13.D, 16D);
 		Assert.assertNotEquals(second, first);
 	}
+
+    @Test
+    public void testParcelWirteAndRead() throws Exception {
+        LngLatAlt lngLatAlt = new LngLatAlt();
+
+        Parcel parcel = MockParcel.obtain();
+        parcel.writeParcelable(lngLatAlt, 0);
+
+        LngLatAlt lngLatAltFromParcel = LngLatAlt.CREATOR.createFromParcel(parcel);
+
+        assertEquals(lngLatAlt, lngLatAltFromParcel);
+
+    }
 }

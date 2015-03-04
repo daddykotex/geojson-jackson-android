@@ -1,34 +1,55 @@
 package org.geojson.jackson;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.geojson.GeoJsonObject;
 import org.geojson.GeoJsonObjectVisitor;
+import org.geojson.mocks.MockBundle;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.geojson.GeoJsonObject.ParcelId.test;
+import static org.junit.Assert.assertEquals;
 
 public class GeoJsonObjectTest {
 
-	private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
-	private class TestGeoJsonObject extends GeoJsonObject {
+    private class TestGeoJsonObject extends GeoJsonObject {
 
-		@Override
-		public <T> T accept(GeoJsonObjectVisitor<T> geoJsonObjectVisitor) {
-			throw new RuntimeException("not implemented");
-		}
-	}
+        @Override
+        public <T> T accept(GeoJsonObjectVisitor<T> geoJsonObjectVisitor) {
+            throw new RuntimeException("not implemented");
+        }
 
-	@Test
-	public void itShouldHaveProperties() throws Exception {
-		TestGeoJsonObject testObject = new TestGeoJsonObject();
-		assertNotNull(testObject.getProperties());
-	}
+        @Override
+        protected ParcelId getParcelId() {
+            return test;
+        }
+    }
 
-	@Test
-	public void itShouldNotSerializeEmptyProperties() throws Exception {
-		TestGeoJsonObject testObject = new TestGeoJsonObject();
-		assertEquals("{\"type\":\"GeoJsonObjectTest$TestGeoJsonObject\"}", mapper.writeValueAsString(testObject));
-	}
+    @Test
+    public void itShouldNotSerializeEmptyProperties() throws Exception {
+        TestGeoJsonObject testObject = new TestGeoJsonObject();
+        assertEquals("{\"type\":\"GeoJsonObjectTest$TestGeoJsonObject\"}", mapper.writeValueAsString(testObject));
+    }
+
+    @Test
+    public void itShouldSerializePropertiesCorrectly() throws Exception {
+        TestGeoJsonObject testObject = new TestGeoJsonObject();
+        testObject.setProperties(MockBundle.newBundle());
+        testObject.setProperty("String", "String");
+        assertEquals("{\"type\":\"GeoJsonObjectTest$TestGeoJsonObject\",\"properties\":{\"String\":\"String\"}}",
+                mapper.writeValueAsString(testObject));
+    }
+
+    @Test
+    public void itShouldDeserializePropertiesCorrectly() throws Exception {
+        TestGeoJsonObject testObject = new TestGeoJsonObject();
+        testObject.setProperties(MockBundle.newBundle());
+        testObject.setProperty("String", "String");
+        assertEquals("{\"type\":\"GeoJsonObjectTest$TestGeoJsonObject\",\"properties\":{\"String\":\"String\"}}",
+                mapper.writeValueAsString(testObject));
+    }
+
+
 }

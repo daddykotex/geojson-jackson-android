@@ -4,14 +4,18 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class Crs implements Parcelable {
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     private String type = "name";
     private Bundle properties = new Bundle();
+
+    public Crs() {
+    }
+
+    public Crs(Parcel in) {
+        Crs crs = new Crs();
+        crs.setProperties(in.readBundle());
+    }
 
     public String getType() {
         return type;
@@ -53,7 +57,6 @@ public class Crs implements Parcelable {
     }
 
 
-
     /*
         Parcelable implementation
      */
@@ -71,7 +74,7 @@ public class Crs implements Parcelable {
     public static final Parcelable.Creator<Crs> CREATOR = new Parcelable.Creator<Crs>() {
         @Override
         public Crs createFromParcel(Parcel in) {
-            return readParcel(in);
+            return new Crs(in);
         }
 
         @Override
@@ -79,12 +82,6 @@ public class Crs implements Parcelable {
             return new Crs[size];
         }
     };
-
-    public static Crs readParcel(Parcel in) {
-        Crs crs = new Crs();
-        crs.setProperties(in.readBundle());
-        return crs;
-    }
 
     /*
         Parcelable implementation

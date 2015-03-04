@@ -1,5 +1,7 @@
 package org.geojson;
 
+import android.os.Parcel;
+
 public class Point extends GeoJsonObject {
 
     private LngLatAlt coordinates;
@@ -64,4 +66,18 @@ public class Point extends GeoJsonObject {
     public String toString() {
         return "Point{" + "coordinates=" + coordinates + "} " + super.toString();
     }
+
+
+    /*
+        Parcelable implementation
+     */
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(this.coordinates, flags);
+    }
+    /*
+        Parcelable implementation
+     */
 }

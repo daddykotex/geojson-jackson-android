@@ -7,6 +7,9 @@ public class Feature extends GeoJsonObject {
     private GeoJsonObject geometry;
     private String id;
 
+    public Feature() {
+    }
+
     public Feature(Parcel in) {
         super(in);
         this.geometry = in.readParcelable(GeoJsonObject.class.getClassLoader());

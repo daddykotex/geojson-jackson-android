@@ -11,6 +11,9 @@ public class FeatureCollection extends GeoJsonObject implements Iterable<Feature
 
     private List<Feature> features = new ArrayList<Feature>();
 
+    public FeatureCollection() {
+    }
+
     public FeatureCollection(Parcel in) {
         super(in);
         in.readList(this.features, null);

@@ -1,5 +1,8 @@
 package org.geojson;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -8,7 +11,7 @@ import org.geojson.jackson.LngLatAltSerializer;
 
 @JsonDeserialize(using = LngLatAltDeserializer.class)
 @JsonSerialize(using = LngLatAltSerializer.class)
-public class LngLatAlt {
+public class LngLatAlt implements Parcelable {
 
     private double longitude;
     private double latitude;
@@ -26,6 +29,14 @@ public class LngLatAlt {
         this.longitude = longitude;
         this.latitude = latitude;
         this.altitude = altitude;
+    }
+
+    public LngLatAlt(Parcel in) {
+        this.longitude = in.readDouble();
+        this.latitude = in.readDouble();
+        if (in.dataAvail() > 0) {
+            this.altitude = in.readDouble();
+        }
     }
 
     public boolean hasAltitude() {
@@ -84,4 +95,36 @@ public class LngLatAlt {
     public String toString() {
         return "LngLatAlt{" + "longitude=" + longitude + ", latitude=" + latitude + ", altitude=" + altitude + '}';
     }
+
+    /*
+        Parcelable implementation
+     */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(this.longitude);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.altitude);
+    }
+
+    public static final Parcelable.Creator<LngLatAlt> CREATOR = new Parcelable.Creator<LngLatAlt>() {
+        @Override
+        public LngLatAlt createFromParcel(Parcel in) {
+            return new LngLatAlt(in);
+        }
+
+        @Override
+        public LngLatAlt[] newArray(int size) {
+            return new LngLatAlt[size];
+        }
+    };
+
+    /*
+        Parcelable implementation
+     */
 }

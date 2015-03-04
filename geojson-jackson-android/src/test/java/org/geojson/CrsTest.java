@@ -21,9 +21,8 @@ public class CrsTest {
         crs.setProperties(MockBundle.newBundle());
         crs.writeToParcel(parcel, 0);
 
-        Crs crsFromParcel = Crs.readParcel(parcel);
+        Crs crsFromParcel = Crs.CREATOR.createFromParcel(parcel);
 
-        assertEquals(crs, crsFromParcel);
         assertEquals(crs.getType(), crsFromParcel.getType());
         assertEquals(crs.getProperties().size(), crsFromParcel.getProperties().size());
     }
@@ -39,10 +38,8 @@ public class CrsTest {
         Parcel parcel = MockParcel.obtain();
         crs.writeToParcel(parcel, 0);
 
-        Crs crsFromParcel = Crs.readParcel(parcel);
+        Crs crsFromParcel = Crs.CREATOR.createFromParcel(parcel);
 
-        assertEquals(crs, crsFromParcel);
-        assertEquals(crs, crsFromParcel);
         assertEquals(crs.getType(), crsFromParcel.getType());
         assertEquals(crs.getProperties().size(), crsFromParcel.getProperties().size());
         assertEquals(crs.getProperties().getString("String"), crs.getProperties().getString("String"));
@@ -63,9 +60,8 @@ public class CrsTest {
         Parcel parcel = MockParcel.obtain();
         crs.writeToParcel(parcel, 0);
 
-        Crs crsFromParcel = Crs.readParcel(parcel);
+        Crs crsFromParcel = Crs.CREATOR.createFromParcel(parcel);
 
-        assertEquals(crs, crsFromParcel);
         assertEquals(crs.getType(), crsFromParcel.getType());
         assertEquals(crs.getProperties().size(), crsFromParcel.getProperties().size());
         assertEquals(crs.getProperties().getString("String"), crs.getProperties().getString("String"));
