@@ -2,7 +2,7 @@ package org.geojson.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.geojson.LngLatAlt;
+import org.geojson.Coordinate;
 import org.geojson.MultiPolygon;
 import org.geojson.Polygon;
 import org.junit.Test;
@@ -16,8 +16,8 @@ public class MultiPoligonTest {
     @Test
     public void itShouldSerialize() throws Exception {
         MultiPolygon multiPolygon = new MultiPolygon();
-        multiPolygon.add(new Polygon(new LngLatAlt(102, 2), new LngLatAlt(103, 2), new LngLatAlt(103, 3),
-                new LngLatAlt(102, 3), new LngLatAlt(102, 2)));
+        multiPolygon.add(new Polygon(new Coordinate(102, 2), new Coordinate(103, 2), new Coordinate(103, 3),
+                new Coordinate(102, 3), new Coordinate(102, 2)));
         Polygon polygon = new Polygon(MockData.EXTERNAL);
         polygon.addInteriorRing(MockData.INTERNAL);
         multiPolygon.add(polygon);

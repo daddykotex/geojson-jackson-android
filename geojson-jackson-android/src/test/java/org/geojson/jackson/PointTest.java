@@ -3,7 +3,7 @@ package org.geojson.jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.geojson.GeoJsonObject;
-import org.geojson.LngLatAlt;
+import org.geojson.Coordinate;
 import org.geojson.Point;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class PointTest {
     }
 
     public static void assertLngLatAlt(double expectedLongitue, double expectedLatitude, double expectedAltitude,
-                                       LngLatAlt point) {
+                                       Coordinate point) {
         assertEquals(expectedLongitue, point.getLongitude(), 0.00001);
         assertEquals(expectedLatitude, point.getLatitude(), 0.00001);
         if (Double.isNaN(expectedAltitude))

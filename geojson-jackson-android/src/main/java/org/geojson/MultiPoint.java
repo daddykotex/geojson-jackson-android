@@ -1,11 +1,11 @@
 package org.geojson;
 
-public class MultiPoint extends Geometry<LngLatAlt> {
+public class MultiPoint extends Geometry<Coordinate> {
 
     public MultiPoint() {
     }
 
-    public MultiPoint(LngLatAlt... points) {
+    public MultiPoint(Coordinate... points) {
         super(points);
     }
 

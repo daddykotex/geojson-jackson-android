@@ -5,46 +5,46 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.List;
 
-public class Polygon extends Geometry<List<LngLatAlt>> {
+public class Polygon extends Geometry<List<Coordinate>> {
 
     public Polygon() {
     }
 
-    public Polygon(List<LngLatAlt> polygon) {
+    public Polygon(List<Coordinate> polygon) {
         add(polygon);
     }
 
-    public Polygon(LngLatAlt... polygon) {
+    public Polygon(Coordinate... polygon) {
         add(Arrays.asList(polygon));
     }
 
-    public void setExteriorRing(List<LngLatAlt> points) {
+    public void setExteriorRing(List<Coordinate> points) {
         coordinates.add(0, points);
     }
 
     @JsonIgnore
-    public List<LngLatAlt> getExteriorRing() {
+    public List<Coordinate> getExteriorRing() {
         assertExteriorRing();
         return coordinates.get(0);
     }
 
     @JsonIgnore
-    public List<List<LngLatAlt>> getInteriorRings() {
+    public List<List<Coordinate>> getInteriorRings() {
         assertExteriorRing();
         return coordinates.subList(1, coordinates.size());
     }
 
-    public List<LngLatAlt> getInteriorRing(int index) {
+    public List<Coordinate> getInteriorRing(int index) {
         assertExteriorRing();
         return coordinates.get(1 + index);
     }
 
-    public void addInteriorRing(List<LngLatAlt> points) {
+    public void addInteriorRing(List<Coordinate> points) {
         assertExteriorRing();
         coordinates.add(points);
     }
 
-    public void addInteriorRing(LngLatAlt... points) {
+    public void addInteriorRing(Coordinate... points) {
         assertExteriorRing();
         coordinates.add(Arrays.asList(points));
     }

@@ -3,10 +3,20 @@ package org.geojson;
 import android.os.Parcel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 public class GeometryCollection extends GeoJsonObject implements Iterable<GeoJsonObject> {
+
+    public GeometryCollection(List<GeoJsonObject> geometries) {
+        this.geometries = geometries;
+    }
+
+    public GeometryCollection(Geometry... geometries) {
+        Collections.addAll(this.geometries, geometries);
+    }
+
 
     private List<GeoJsonObject> geometries = new ArrayList<GeoJsonObject>();
 

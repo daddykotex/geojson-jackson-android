@@ -7,24 +7,24 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
-import org.geojson.LngLatAlt;
+import org.geojson.Coordinate;
 
 import java.io.IOException;
 
-public class LngLatAltDeserializer extends JsonDeserializer<LngLatAlt> {
+public class LngLatAltDeserializer extends JsonDeserializer<Coordinate> {
 
     @Override
-    public LngLatAlt deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    public Coordinate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
         if (jp.isExpectedStartArrayToken()) {
             return deserializeArray(jp, ctxt);
         }
-        throw ctxt.mappingException(LngLatAlt.class);
+        throw ctxt.mappingException(Coordinate.class);
     }
 
-    protected LngLatAlt deserializeArray(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    protected Coordinate deserializeArray(JsonParser jp, DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
-        LngLatAlt node = new LngLatAlt();
+        Coordinate node = new Coordinate();
         node.setLongitude(extractDouble(jp, ctxt, false));
         node.setLatitude(extractDouble(jp, ctxt, false));
         node.setAltitude(extractDouble(jp, ctxt, true));

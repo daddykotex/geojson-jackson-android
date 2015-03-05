@@ -4,28 +4,28 @@ import android.os.Parcel;
 
 public class Point extends GeoJsonObject {
 
-    private LngLatAlt coordinates;
+    private Coordinate coordinates;
 
     public Point() {
     }
 
-    public Point(LngLatAlt coordinates) {
+    public Point(Coordinate coordinates) {
         this.coordinates = coordinates;
     }
 
     public Point(double longitude, double latitude) {
-        coordinates = new LngLatAlt(longitude, latitude);
+        coordinates = new Coordinate(longitude, latitude);
     }
 
     public Point(double longitude, double latitude, double altitude) {
-        coordinates = new LngLatAlt(longitude, latitude, altitude);
+        coordinates = new Coordinate(longitude, latitude, altitude);
     }
 
-    public LngLatAlt getCoordinates() {
+    public Coordinate getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(LngLatAlt coordinates) {
+    public void setCoordinates(Coordinate coordinates) {
         this.coordinates = coordinates;
     }
 

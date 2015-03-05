@@ -5,14 +5,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import org.geojson.LngLatAlt;
+import org.geojson.Coordinate;
 
 import java.io.IOException;
 
-public class LngLatAltSerializer extends JsonSerializer<LngLatAlt> {
+public class LngLatAltSerializer extends JsonSerializer<Coordinate> {
 
     @Override
-    public void serialize(LngLatAlt value, JsonGenerator jgen, SerializerProvider provider) throws IOException,
+    public void serialize(Coordinate value, JsonGenerator jgen, SerializerProvider provider) throws IOException,
             JsonProcessingException {
         jgen.writeStartArray();
         jgen.writeNumber(value.getLongitude());

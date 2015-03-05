@@ -2,13 +2,15 @@ package org.geojson;
 
 import java.util.List;
 
-public class MultiPolygon extends Geometry<List<List<LngLatAlt>>> {
+public class MultiPolygon extends Geometry<List<List<Coordinate>>> {
 
     public MultiPolygon() {
     }
 
-    public MultiPolygon(Polygon polygon) {
-        add(polygon);
+    public MultiPolygon(Polygon... polygons) {
+        for (Polygon polygon : polygons) {
+            add(polygon);
+        }
     }
 
     public MultiPolygon add(Polygon polygon) {

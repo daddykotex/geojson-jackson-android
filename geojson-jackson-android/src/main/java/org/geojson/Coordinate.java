@@ -11,27 +11,27 @@ import org.geojson.jackson.LngLatAltSerializer;
 
 @JsonDeserialize(using = LngLatAltDeserializer.class)
 @JsonSerialize(using = LngLatAltSerializer.class)
-public class LngLatAlt implements Parcelable {
+public class Coordinate implements Parcelable {
 
     private double longitude;
     private double latitude;
     private double altitude = Double.NaN;
 
-    public LngLatAlt() {
+    public Coordinate() {
     }
 
-    public LngLatAlt(double longitude, double latitude) {
+    public Coordinate(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public LngLatAlt(double longitude, double latitude, double altitude) {
+    public Coordinate(double longitude, double latitude, double altitude) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.altitude = altitude;
     }
 
-    public LngLatAlt(Parcel in) {
+    public Coordinate(Parcel in) {
         this.longitude = in.readDouble();
         this.latitude = in.readDouble();
         if (in.dataAvail() > 0) {
@@ -72,10 +72,10 @@ public class LngLatAlt implements Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof LngLatAlt)) {
+        if (!(o instanceof Coordinate)) {
             return false;
         }
-        LngLatAlt lngLatAlt = (LngLatAlt) o;
+        Coordinate lngLatAlt = (Coordinate) o;
         return Double.compare(lngLatAlt.latitude, latitude) == 0 && Double.compare(lngLatAlt.longitude, longitude) == 0
                 && Double.compare(lngLatAlt.altitude, altitude) == 0;
     }
@@ -112,15 +112,15 @@ public class LngLatAlt implements Parcelable {
         dest.writeDouble(this.altitude);
     }
 
-    public static final Parcelable.Creator<LngLatAlt> CREATOR = new Parcelable.Creator<LngLatAlt>() {
+    public static final Parcelable.Creator<Coordinate> CREATOR = new Parcelable.Creator<Coordinate>() {
         @Override
-        public LngLatAlt createFromParcel(Parcel in) {
-            return new LngLatAlt(in);
+        public Coordinate createFromParcel(Parcel in) {
+            return new Coordinate(in);
         }
 
         @Override
-        public LngLatAlt[] newArray(int size) {
-            return new LngLatAlt[size];
+        public Coordinate[] newArray(int size) {
+            return new Coordinate[size];
         }
     };
 

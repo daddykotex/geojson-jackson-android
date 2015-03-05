@@ -15,7 +15,7 @@ public class GeoJsonObjectVisitorTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{{new GeometryCollection()}, {new FeatureCollection()},
                 {new Point(12D, 13D)}, {new Feature()},
-                {new MultiLineString(Arrays.asList(new LngLatAlt(12D, 13D)))}, {new Polygon()},
+                {new MultiLineString(Arrays.asList(new Coordinate(12D, 13D)))}, {new Polygon()},
                 {new MultiPolygon()}, {new MultiPoint()}, {new LineString()}});
     }
 

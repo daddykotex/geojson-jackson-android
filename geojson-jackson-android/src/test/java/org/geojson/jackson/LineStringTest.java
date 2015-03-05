@@ -3,7 +3,7 @@ package org.geojson.jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.geojson.LineString;
-import org.geojson.LngLatAlt;
+import org.geojson.Coordinate;
 import org.geojson.MultiPoint;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class LineStringTest {
 
     @Test
     public void itShouldSerializeMultiPoint() throws Exception {
-        MultiPoint lineString = new LineString(new LngLatAlt(100, 0), new LngLatAlt(101, 1));
+        MultiPoint lineString = new LineString(new Coordinate(100, 0), new Coordinate(101, 1));
         assertEquals("{\"type\":\"LineString\",\"coordinates\":[[100.0,0.0],[101.0,1.0]]}",
                 mapper.writeValueAsString(lineString));
     }
@@ -28,7 +28,7 @@ public class LineStringTest {
         LineString lineString = mapper.readValue("{\"type\":\"LineString\",\"coordinates\":[[100.0,0.0],[101.0,1.0]]}",
                 LineString.class);
         assertNotNull(lineString);
-        List<LngLatAlt> coordinates = lineString.getCoordinates();
+        List<Coordinate> coordinates = lineString.getCoordinates();
         PointTest.assertLngLatAlt(100, 0, Double.NaN, coordinates.get(0));
         PointTest.assertLngLatAlt(101, 1, Double.NaN, coordinates.get(1));
     }

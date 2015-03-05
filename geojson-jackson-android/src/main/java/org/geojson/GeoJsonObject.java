@@ -31,7 +31,7 @@ public abstract class GeoJsonObject implements Parcelable {
     @SuppressWarnings("unchecked")
     protected GeoJsonObject(Parcel in) {
         this.crs = in.readParcelable(Crs.class.getClassLoader());
-        in.readDoubleArray(this.bbox);
+        this.bbox = in.createDoubleArray();
         this.properties = in.readHashMap(null);
     }
 

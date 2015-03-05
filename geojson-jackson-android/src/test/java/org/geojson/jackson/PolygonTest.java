@@ -2,7 +2,7 @@ package org.geojson.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.geojson.LngLatAlt;
+import org.geojson.Coordinate;
 import org.geojson.Polygon;
 import org.junit.Test;
 
@@ -47,10 +47,10 @@ public class PolygonTest {
         assertListEquals(MockData.INTERNAL, polygon.getInteriorRings().get(0));
     }
 
-    private void assertListEquals(List<LngLatAlt> expectedList, List<LngLatAlt> actualList) {
+    private void assertListEquals(List<Coordinate> expectedList, List<Coordinate> actualList) {
         for (int x = 0; x < actualList.size(); x++) {
-            LngLatAlt expected = expectedList.get(x);
-            LngLatAlt actual = actualList.get(x);
+            Coordinate expected = expectedList.get(x);
+            Coordinate actual = actualList.get(x);
             PointTest.assertLngLatAlt(expected.getLongitude(), expected.getLatitude(), expected.getAltitude(), actual);
         }
     }

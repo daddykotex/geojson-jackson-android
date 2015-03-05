@@ -13,6 +13,7 @@ public class Feature extends GeoJsonObject {
     public Feature(Parcel in) {
         super(in);
         this.geometry = in.readParcelable(GeoJsonObject.class.getClassLoader());
+        this.id = in.readString();
     }
 
     public GeoJsonObject getGeometry() {
