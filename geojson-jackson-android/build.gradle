@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 1
-        versionName LIBRARY_VERSION
+        versionCode = VERSION_CODE
+        versionName = VERSION_NAME
 
     }
     sourceSets {
@@ -25,10 +25,6 @@ android {
         exclude 'META-INF/NOTICE'
     }
 }
-
-def siteUrl = 'https://github.com/daddykotex/geojson-jackson-android'
-def gitUrl = 'git@github.com:daddykotex/geojson-jackson-android.git'
-
 
 def isReleaseBuild() {
     return !LIBRARY_VERSION.contains("SNAPSHOT")
@@ -59,33 +55,28 @@ uploadArchives {
     repositories.mavenDeployer {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-        snapshotRepository(url: sonatypeSnapshotRepo) {
-            authentication(userName: sonatypeUsername,
-                    password: sonatypePassword)
-        }
-
-        repository(url: sonatypeReleaseRepo) {
+        repository(url: sonatypeSnapshotRepo) {
             authentication(userName: sonatypeUsername,
                     password: sonatypePassword)
         }
 
         pom.project {
-            name "GeoJson Jackson for Android"
-            packaging "aar"
-            description "Android GeoJSON Library to use with Jackson"
-            url siteUrl
+            name POM_NAME
+            packaging 'aar'
+            description POM_DESC
+            url GITHUB_URL
 
             scm {
-                url siteUrl
-                connection "scm:git:" + gitUrl
-                developerConnection "scm:git:" + gitUrl
+                url GITHUB_REPO
+                connection GITHUB_REPO
+                developerConnection GITHUB_REPO
             }
 
             licenses {
                 license {
-                    name "The Apache Software License, Version 2.0"
-                    url siteUrl + "/blob/master/LICENSE"
-                    distribution "repo"
+                    name LICENSE_NAME
+                    url LICENSE_URL
+                    distribution 'repo'
                 }
             }
 
@@ -93,11 +84,13 @@ uploadArchives {
                 developer {
                     id "daddykotex"
                     name "David Francoeur"
+                    email "dfrancoeur04@gmail.com"
                 }
             }
         }
     }
 }
+
 
 signing {
     required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
@@ -107,8 +100,8 @@ signing {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
-    testCompile "junit:junit:$junitVersion"
-    testCompile "org.mockito:mockito-all:$mockitoAll"
+    compile "com.fasterxml.jackson.core:jackson-databind:$JACKSON_VERSION"
+    compile "com.fasterxml.jackson.core:jackson-core:$JACKSON_VERSION"
+    testCompile "junit:junit:$JUNIT_VERSION"
+    testCompile "org.mockito:mockito-all:$MOCKITO_ALL_VERSION"
 }
