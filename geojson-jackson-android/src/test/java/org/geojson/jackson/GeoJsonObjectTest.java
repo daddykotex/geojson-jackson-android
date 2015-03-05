@@ -6,7 +6,6 @@ import org.geojson.GeoJsonObject;
 import org.geojson.GeoJsonObjectVisitor;
 import org.junit.Test;
 
-import static org.geojson.GeoJsonObject.ParcelId.test;
 import static org.junit.Assert.assertEquals;
 
 public class GeoJsonObjectTest {
@@ -22,7 +21,7 @@ public class GeoJsonObjectTest {
 
         @Override
         protected ParcelId getParcelId() {
-            return test;
+            return null;
         }
     }
 

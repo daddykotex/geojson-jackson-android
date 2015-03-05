@@ -1,6 +1,5 @@
 package org.geojson;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,8 +22,7 @@ public abstract class GeoJsonObject implements Parcelable {
 
     public enum ParcelId {
         feature, geometry_collection, line_string, multiline_string,
-        multipoint, multipolygon, point, polygon, feature_collection,
-        test
+        multipoint, multipolygon, point, polygon, feature_collection
     }
 
     protected GeoJsonObject() {

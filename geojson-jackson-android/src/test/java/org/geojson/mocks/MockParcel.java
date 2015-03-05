@@ -1,12 +1,10 @@
 package org.geojson.mocks;
 
-import android.os.Bundle;
 import android.os.Parcel;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
