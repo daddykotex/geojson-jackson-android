@@ -1,31 +1,33 @@
 package org.geojson;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Crs implements Parcelable {
 
     private String type = "name";
-    private Bundle properties = new Bundle();
+    private Map<String, Object> properties = new HashMap<>();
 
     public Crs() {
     }
 
+    @SuppressWarnings("unchecked")
     public Crs(Parcel in) {
-        Crs crs = new Crs();
-        crs.setProperties(in.readBundle());
+        this.setProperties(in.readHashMap(null));
     }
 
     public String getType() {
         return type;
     }
 
-    public Bundle getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Bundle bundle) {
+    public void setProperties(Map<String, Object> bundle) {
         this.properties = bundle;
     }
 
@@ -68,7 +70,7 @@ public class Crs implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeBundle(this.properties);
+        dest.writeMap(this.properties);
     }
 
     public static final Parcelable.Creator<Crs> CREATOR = new Parcelable.Creator<Crs>() {

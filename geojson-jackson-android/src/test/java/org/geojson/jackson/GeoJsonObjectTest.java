@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.geojson.GeoJsonObject;
 import org.geojson.GeoJsonObjectVisitor;
-import org.geojson.mocks.MockBundle;
 import org.junit.Test;
 
 import static org.geojson.GeoJsonObject.ParcelId.test;
@@ -36,7 +35,6 @@ public class GeoJsonObjectTest {
     @Test
     public void itShouldSerializePropertiesCorrectly() throws Exception {
         TestGeoJsonObject testObject = new TestGeoJsonObject();
-        testObject.setProperties(MockBundle.newBundle());
         testObject.setProperty("String", "String");
         assertEquals("{\"type\":\"GeoJsonObjectTest$TestGeoJsonObject\",\"properties\":{\"String\":\"String\"}}",
                 mapper.writeValueAsString(testObject));
@@ -45,7 +43,6 @@ public class GeoJsonObjectTest {
     @Test
     public void itShouldDeserializePropertiesCorrectly() throws Exception {
         TestGeoJsonObject testObject = new TestGeoJsonObject();
-        testObject.setProperties(MockBundle.newBundle());
         testObject.setProperty("String", "String");
         assertEquals("{\"type\":\"GeoJsonObjectTest$TestGeoJsonObject\",\"properties\":{\"String\":\"String\"}}",
                 mapper.writeValueAsString(testObject));

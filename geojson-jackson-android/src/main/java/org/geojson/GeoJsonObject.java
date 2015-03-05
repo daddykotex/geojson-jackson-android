@@ -13,12 +13,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import org.geojson.jackson.BundleDeserializer;
-import org.geojson.jackson.BundleSerializer;
-import org.geojson.jackson.LngLatAltDeserializer;
-import org.geojson.jackson.LngLatAltSerializer;
-
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonTypeInfo(property = "type", use = Id.NAME)
 @JsonSubTypes({@Type(Feature.class), @Type(Polygon.class), @Type(MultiPolygon.class), @Type(FeatureCollection.class),
@@ -35,17 +32,18 @@ public abstract class GeoJsonObject implements Parcelable {
     protected GeoJsonObject() {
     }
 
+    @SuppressWarnings("unchecked")
     protected GeoJsonObject(Parcel in) {
         this.crs = in.readParcelable(Crs.class.getClassLoader());
         in.readDoubleArray(this.bbox);
-        this.properties = in.readBundle();
+        this.properties = in.readHashMap(null);
     }
 
     private Crs crs;
     private double[] bbox;
 
-    @JsonInclude(Include.NON_NULL)
-    private Bundle properties;
+    @JsonInclude(Include.NON_EMPTY)
+    private Map<String, Object> properties = new HashMap<>();
 
     public Crs getCrs() {
         return crs;
@@ -64,11 +62,7 @@ public abstract class GeoJsonObject implements Parcelable {
     }
 
     public void setProperty(String key, Object value) {
-        if(this.properties == null){
-            this.properties = new Bundle();
-        }
-
-        this.setBundleProperty(key, value);
+        this.properties.put(key, value);
     }
 
     @SuppressWarnings("unchecked")
@@ -76,38 +70,15 @@ public abstract class GeoJsonObject implements Parcelable {
         return (T) properties.get(key);
     }
 
-    @JsonSerialize(using = BundleSerializer.class)
-    public Bundle getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    @JsonDeserialize(using = BundleDeserializer.class)
-    public void setProperties(Bundle properties) {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 
     public abstract <T> T accept(GeoJsonObjectVisitor<T> geoJsonObjectVisitor);
-
-    private void setBundleProperty(final String key, final Object value) {
-        if (value instanceof String) {
-            this.properties.putString(key, (String) value);
-            return;
-        } else if (value instanceof Integer) {
-            this.properties.putInt(key, (Integer) value);
-            return;
-        } else if (value instanceof Boolean) {
-            this.properties.putBoolean(key, (Boolean) value);
-            return;
-        } else if (value instanceof Float) {
-            this.properties.putFloat(key, (Float) value);
-            return;
-        } else if (value instanceof Parcelable) {
-            this.properties.putParcelable(key, (Parcelable) value);
-            return;
-        }
-
-        throw new RuntimeException("Unable to add property to bundle");
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -143,7 +114,7 @@ public abstract class GeoJsonObject implements Parcelable {
 
     @Override
     public String toString() {
-        return "GeoJsonObject{" + "properties=" + propertiesToString() + "}";
+        return "GeoJsonObject{" + "properties=" + properties + "}";
     }
 
     /*
@@ -160,7 +131,7 @@ public abstract class GeoJsonObject implements Parcelable {
         dest.writeString(this.getParcelId().toString());
         dest.writeParcelable(this.crs, flags);
         dest.writeDoubleArray(this.bbox);
-        dest.writeBundle(this.properties);
+        dest.writeMap(this.properties);
     }
 
     protected abstract ParcelId getParcelId();

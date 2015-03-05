@@ -6,6 +6,8 @@ import android.os.Parcel;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import static org.mockito.Matchers.any;
@@ -50,7 +52,7 @@ public class MockParcel {
         };
         doAnswer(writeValueAnswer).when(mockedParcel).writeLong(anyLong());
         doAnswer(writeValueAnswer).when(mockedParcel).writeString(anyString());
-        doAnswer(writeValueAnswer).when(mockedParcel).writeBundle(any(Bundle.class));
+        doAnswer(writeValueAnswer).when(mockedParcel).writeMap(any(Map.class));
     }
 
     private void setupReads() {
@@ -66,10 +68,11 @@ public class MockParcel {
                 return (String) objects.pop();
             }
         });
-        when(mockedParcel.readBundle()).thenAnswer(new Answer<Bundle>() {
+        when(mockedParcel.readHashMap(any(ClassLoader.class))).thenAnswer(new Answer<Map<String, Object>>() {
             @Override
-            public Bundle answer(InvocationOnMock invocation) throws Throwable {
-                return (Bundle) objects.pop();
+            @SuppressWarnings("unchecked")
+            public Map<String, Object> answer(InvocationOnMock invocation) throws Throwable {
+                return (Map) objects.pop();
             }
         });
     }
